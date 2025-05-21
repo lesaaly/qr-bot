@@ -2,3 +2,4 @@ telebot
 qrcode
 pillow
 python-dotenv
+pytest
