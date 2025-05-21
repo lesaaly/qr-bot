@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 import qrcode
 import telebot
+import io
 
 load_dotenv()
 
@@ -20,11 +21,16 @@ def qr(message):
 
 @bot.message_handler(func=lambda message: user_data.get(message.chat.id))
 def get_qr(message):
-    data = message.text
-    img = qrcode.make(data)
-    img.save('qr-code.png')
-    with open('qr-code.png', 'rb') as file:
-        bot.send_photo(message.chat.id, file)
-    del user_data[message.chat.id]
+    try: 
+        data = message.text
+        img = qrcode.make(data)
+        bio = io.BytesIO()
+        bio.name = 'qr.png'
+        img.save(bio, 'PNG')
+        bio.seek(0)
+        bot.send_photo(message.chat.id, bio)
+        del user_data[message.chat.id]
+    except Exception as e:
+        bot.send_message(message.chat.id, "Ошибка при генерации QR-кода. Попробуйте еще раз.")
 
 bot.polling(none_stop = True)
