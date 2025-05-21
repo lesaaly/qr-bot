@@ -1,0 +1,4 @@
+qr-code.png
+__pycache__/
+*.pyc
+.env
